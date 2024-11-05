@@ -2,6 +2,11 @@ const hre = require("hardhat");
 const { ethers } = require("hardhat");
 
 async function main() {
+    // Enable viaIR in the hardhat config first
+    await hre.run('compile', {
+        viaIR: true
+    });
+
     // Get the contract factory using hardhat-ethers
     const FlashLoanArbitrage = await ethers.getContractFactory("FlashLoanArbitrage");
 

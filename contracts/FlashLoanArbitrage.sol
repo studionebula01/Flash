@@ -72,10 +72,10 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase, ReentrancyGuard, Own
     }
 
     function executeOperation(
-        address asset,
+        address _asset,
         uint256 amount,
         uint256 premium,
-        address initiator,
+        address _initiator,
         bytes calldata params
     ) external override returns (bool) {
         (address[] memory path) = abi.decode(params, (address[]));
@@ -99,7 +99,7 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase, ReentrancyGuard, Own
         require(expectedOutput > minProfitMargin, "Insufficient profit after gas");
 
         // Execute the swap on the more profitable DEX
-        IERC20(asset).approve(address(sourceRouter), amount);
+        IERC20(_asset).approve(address(sourceRouter), amount);
         sourceRouter.swapExactTokensForTokens(
             amount,
             expectedOutput,
@@ -108,14 +108,14 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase, ReentrancyGuard, Own
             block.timestamp
         );
 
-        uint256 profit = IERC20(asset).balanceOf(address(this)) - requiredAmount;
+        uint256 profit = IERC20(_asset).balanceOf(address(this)) - requiredAmount;
         require(profit > 0, "No profit generated");
         
         // Transfer profit and approve repayment
-        IERC20(asset).transfer(owner(), profit);
-        IERC20(asset).approve(address(POOL), requiredAmount);
+        IERC20(_asset).transfer(owner(), profit);
+        IERC20(_asset).approve(address(POOL), requiredAmount);
 
-        emit ArbitrageExecuted(asset, amount, profit);
+        emit ArbitrageExecuted(_asset, amount, profit);
         return true;
     }
 
