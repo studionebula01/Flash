@@ -27,6 +27,9 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase, ReentrancyGuard, Own
     uint256 public constant GAS_PRICE_LIMIT = 1 gwei; // Adjust based on Base's typical gas prices
     uint256 public constant MAX_GAS_LIMIT = 2000000;  // Conservative gas limit for Base
 
+    // Add new constant at the top with other constants
+    uint256 public constant MIN_PROFIT_USD = 0.0005 ether; // Approximately $1 worth of ETH at ~$2000/ETH
+
     constructor(
         address _addressProvider,
         address _uniswapRouter,
@@ -95,7 +98,7 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase, ReentrancyGuard, Own
         
         // Adjust profit calculation to account for L2 gas costs
         uint256 estimatedGasCost = tx.gasprice * MAX_GAS_LIMIT;
-        uint256 minProfitMargin = (requiredAmount * 105) / 100 + estimatedGasCost;
+        uint256 minProfitMargin = requiredAmount + estimatedGasCost + MIN_PROFIT_USD;
         require(expectedOutput > minProfitMargin, "Insufficient profit after gas");
 
         // Execute the swap on the more profitable DEX
