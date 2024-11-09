@@ -1,4 +1,4 @@
-# Flash Loan Arbitrage Bot for Base Network
+# Aave v3 Flash Loan Arbitrage Bot for the Optimisim Network
 
 This project implements a flash loan arbitrage bot that monitors and executes trading opportunities between Uniswap and SushiSwap on the Base network.
 
